@@ -14,7 +14,7 @@ A successful mutation response is not treated as proof. TookEffect binds the exa
 | `NOT_APPLIED` | Authoritative evidence establishes that the requested effect did not occur. |
 | `AMBIGUOUS` | TookEffect cannot establish the external truth safely. The Action fails closed. |
 
-##Verify your first AI action free → TookEffect.com
+Verify your first AI action free → TookEffect.com
 
 ## Quick start
 
