@@ -1,0 +1,49 @@
+name: TookEffect Verified Merge
+description: Independently verify and execute an exact GitHub pull request merge with TookEffect.
+author: TookEffect
+branding:
+  icon: check-circle
+  color: green
+
+inputs:
+  tookeffect-token:
+    description: TookEffect Agent API token. Store it as a GitHub Actions secret.
+    required: true
+  github-token:
+    description: Read-only GitHub token used to resolve the exact pull request head and base state.
+    required: true
+  pull-number:
+    description: Pull request number to verify and merge.
+    required: true
+  merge-method:
+    description: GitHub merge method: merge, squash, or rebase.
+    required: false
+    default: squash
+  require-successful-checks:
+    description: Require successful checks before TookEffect performs the merge.
+    required: false
+    default: "true"
+  timeout-seconds:
+    description: Maximum time to wait for the TookEffect verdict.
+    required: false
+    default: "90"
+  api-url:
+    description: TookEffect API origin.
+    required: false
+    default: https://tookeffect.com
+
+outputs:
+  effect-id:
+    description: TookEffect Effect identifier.
+  verdict:
+    description: Final TookEffect verdict: APPLIED, NOT_APPLIED, or AMBIGUOUS.
+  reason:
+    description: Human-readable TookEffect verdict reason when available.
+  receipt-url:
+    description: Authenticated TookEffect receipt API URL when an Effect identifier is available.
+  receipt-keys-url:
+    description: Public TookEffect receipt verification keys URL.
+
+runs:
+  using: node24
+  main: index.js
