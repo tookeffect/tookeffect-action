@@ -191,9 +191,21 @@ async function resolvePullIntent({ repository, pullNumber, githubToken, mergeMet
 }
 
 function retryDelay(response) {
-  const value = Number(response.headers.get('retry-after'));
-  if (Number.isFinite(value) && value >= 0) return Math.min(value * 1000, 10000);
+  const header = response.headers.get('retry-after');
+  if (header !== null && header.trim() !== '') {
+    const value = Number(header);
+    if (Number.isFinite(value) && value >= 0) return Math.min(value * 1000, 10000);
+  }
   return POLL_DELAY_MS;
+}
+
+function mergeEffectState(previous, next) {
+  return {
+    effectId: next.effectId || previous.effectId,
+    status: next.status || previous.status,
+    verdict: next.verdict || previous.verdict,
+    reason: next.reason || previous.reason,
+  };
 }
 
 async function sleep(ms) {
@@ -232,7 +244,7 @@ async function runVerifiedMerge({ token, intent, timeoutSeconds, onState = () =>
     }
 
     const data = await readJsonResponse(response);
-    lastState = { ...lastState, ...extractEffectState(data) };
+    lastState = mergeEffectState(lastState, extractEffectState(data));
     onState(lastState);
 
     if (response.status === 200) {
@@ -344,4 +356,6 @@ module.exports = {
   parseBoolean,
   parsePullNumber,
   parseTimeoutSeconds,
+  retryDelay,
+  mergeEffectState,
 };
