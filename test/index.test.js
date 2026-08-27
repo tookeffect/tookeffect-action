@@ -9,6 +9,8 @@ const {
   parseBoolean,
   parsePullNumber,
   parseTimeoutSeconds,
+  retryDelay,
+  mergeEffectState,
 } = require('../index.js');
 
 const intent = {
@@ -49,4 +51,19 @@ test('input parsers fail closed on invalid values', () => {
   assert.equal(parseTimeoutSeconds('90'), 90);
   assert.throws(() => parseTimeoutSeconds('10'));
   assert.throws(() => parseTimeoutSeconds('301'));
+});
+
+test('retryDelay defaults to two seconds when Retry-After is absent', () => {
+  const response = { headers: { get: () => null } };
+  assert.equal(retryDelay(response), 2000);
+});
+
+test('mergeEffectState preserves known fields across partial retry responses', () => {
+  assert.deepEqual(
+    mergeEffectState(
+      { effectId: 'eff_123', status: 'RUNNING', verdict: '', reason: '' },
+      { effectId: '', status: '', verdict: '', reason: 'temporary' },
+    ),
+    { effectId: 'eff_123', status: 'RUNNING', verdict: '', reason: 'temporary' },
+  );
 });
