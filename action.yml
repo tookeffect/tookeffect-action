@@ -1,5 +1,5 @@
 name: TookEffect Verified Merge
-description: Independently verify and execute an exact GitHub pull request merge with TookEffect.
+description: Independently execute and verify an exact GitHub pull request merge with TookEffect.
 author: TookEffect
 branding:
   icon: check-circle
@@ -24,13 +24,9 @@ inputs:
     required: false
     default: "true"
   timeout-seconds:
-    description: Maximum time to wait for the TookEffect verdict.
+    description: Maximum time to wait for a final TookEffect verdict, from 15 to 300 seconds.
     required: false
     default: "90"
-  api-url:
-    description: TookEffect API origin.
-    required: false
-    default: https://tookeffect.com
 
 outputs:
   effect-id:
@@ -42,7 +38,7 @@ outputs:
   receipt-url:
     description: Authenticated TookEffect receipt API URL when an Effect identifier is available.
   receipt-keys-url:
-    description: Public TookEffect receipt verification keys URL.
+    description: Public TookEffect Ed25519 receipt verification keys URL.
 
 runs:
   using: node24
