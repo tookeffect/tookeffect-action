@@ -282,10 +282,11 @@ function publishOutputs(state) {
 function renderSummary(state, links) {
   const verdict = state.verdict || 'NO FINAL VERDICT';
   const icon = verdict === 'APPLIED' ? '✅' : verdict === 'NOT_APPLIED' ? '⛔' : '⚠️';
+  const label = verdict === 'APPLIED' ? 'Verified' : verdict === 'NOT_APPLIED' ? 'Not applied' : verdict === 'AMBIGUOUS' ? 'Needs review' : 'No final verdict';
   const lines = [
-    `## ${icon} Verified by [TookEffect](${TOOKEFFECT_ORIGIN})`,
+    `## ${icon} ${label} — [TookEffect](${TOOKEFFECT_ORIGIN})`,
     '',
-    `**Verdict:** \`${verdict}\``,
+    `**API verdict:** \`${verdict}\``,
   ];
   if (state.effectId) lines.push(`**Effect:** \`${markdownInline(state.effectId)}\``);
   if (state.reason) lines.push(`**Reason:** ${markdownInline(state.reason)}`);
@@ -328,16 +329,16 @@ async function main() {
   writeSummary(renderSummary(state, links));
 
   if (state.verdict === 'APPLIED') {
-    notice(`APPLIED — TookEffect independently verified the merge${state.effectId ? ` (${state.effectId})` : ''}. ${TOOKEFFECT_ORIGIN}`);
+    notice(`Verified (APPLIED) — TookEffect independently verified the merge${state.effectId ? ` (${state.effectId})` : ''}. ${TOOKEFFECT_ORIGIN}`);
     console.log('TookEffect verdict: APPLIED');
     return;
   }
 
   const reason = state.reason ? ` ${state.reason}` : '';
   if (state.verdict === 'NOT_APPLIED') {
-    throw new Error(`TookEffect verdict: NOT_APPLIED.${reason}`);
+    throw new Error(`Not applied (NOT_APPLIED).${reason}`);
   }
-  throw new Error(`TookEffect verdict: AMBIGUOUS.${reason} Do not infer success or retry with a new idempotency key.`);
+  throw new Error(`Needs review (AMBIGUOUS).${reason} Do not infer success or retry with a new idempotency key.`);
 }
 
 if (require.main === module) {

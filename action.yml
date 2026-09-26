@@ -1,9 +1,9 @@
 name: "TookEffect Verified Merge"
-description: "Independently execute and verify an exact GitHub pull request merge with TookEffect."
+description: "Merge an exact GitHub pull request, independently verify the result, and receive evidence from TookEffect."
 author: "TookEffect"
 branding:
   icon: "check-circle"
-  color: "green"
+  color: "black"
 
 inputs:
   tookeffect-token:
